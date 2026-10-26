@@ -1,0 +1,11 @@
+# --- Web Framework & Server (API Engine) ---
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+starlette==1.6.0
+
+# --- HTTP Client (Koneksi ke Ollama API) ---
+httpx==0.28.1
+
+# --- File / PDF Processing ---
+pypdf==5.1.0
+python-multipart==0.0.12

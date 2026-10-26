@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sanz AI - asisten AI lokal bertenaga Ollama dengan tampilan bergaya ChatGPT.">
+  <title>Sanz AI - Next-Gen Assistant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/static/images/sanz-logo.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand">
+        <div class="brand-icon">
+          <img src="/static/images/sanz-logo.svg" alt="Sanz AI" class="brand-logo-img">
+        </div>
+        <div class="brand-name">Sanz AI</div>
+      </a>
+    </div>
+
+    <button class="new-chat-btn" id="newChatBtn">
+      <span>+ Obrolan Baru</span>
+      <span class="shortcut-hint">Ctrl+K</span>
+    </button>
+
+    <div class="chat-history">
+      <div class="chat-history-title">Riwayat Percakapan</div>
+      <div class="history-item active">
+        <i class="fa-regular fa-message icon" aria-hidden="true"></i>
+        Sesi Saat Ini
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span>Ollama Online</span>
+      </div>
+      <span class="version-label">v1.0.0</span>
+    </div>
+  </aside>
+
+  <main class="main-content chat-empty" id="mainContent">
+    <header class="chat-header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+          <i class="fa-solid fa-bars icon icon-md" aria-hidden="true"></i>
+        </button>
+        <div class="model-selector">
+          <span class="model-name">Sanz AI</span>
+          <span class="model-tag">llama3.2:3b</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="clearChatBtn" title="Bersihkan Obrolan">
+          <i class="fa-regular fa-trash-can icon" aria-hidden="true"></i>
+          Bersihkan
+        </button>
+        <a href="/docs" target="_blank" class="icon-btn" title="Buka Dokumentasi Swagger API">
+          <i class="fa-solid fa-book icon" aria-hidden="true"></i>
+          API Docs
+        </a>
+      </div>
+    </header>
+
+    <div class="chat-view" id="chatView">
+      <div class="messages-container" id="messagesContainer">
+        <div class="messages-wrapper" id="messagesWrapper">
+
+          <section class="welcome-hero" id="welcomeHero">
+            <div class="hero-icon">
+              <img src="/static/images/sanz-logo.svg" alt="Sanz AI" class="hero-logo-img">
+            </div>
+            <h1 class="hero-title">Apa yang bisa saya bantu hari ini?</h1>
+            <p class="hero-subtitle">Asisten AI lokal bertenaga Ollama &amp; LLaMA 3.2.</p>
+          </section>
+
+        </div>
+      </div>
+
+      <div class="input-section" id="inputSection">
+        <div class="input-wrapper">
+          <form id="chatForm">
+            <div class="input-box">
+              <textarea id="promptInput" class="chat-textarea" rows="1" placeholder="Tanya apa saja ke Sanz AI..."
+                required></textarea>
+              <button type="submit" id="sendBtn" class="send-btn" aria-label="Kirim pesan" disabled>
+                <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="suggestions-grid" id="suggestionsGrid">
+            <div class="suggestion-card"
+              data-prompt="Jelaskan apa keunggulan menjalankan AI secara lokal dengan Docker?">
+              <div class="suggestion-title">
+                <i class="fa-brands fa-docker icon" aria-hidden="true"></i>
+                AI &amp; Docker
+              </div>
+              <div class="suggestion-desc">Keunggulan menjalankan AI lokal di Docker</div>
+            </div>
+            <div class="suggestion-card"
+              data-prompt="Buatkan contoh kode Python untuk membaca file PDF dan membuat ringkasannya.">
+              <div class="suggestion-title">
+                <i class="fa-brands fa-python icon" aria-hidden="true"></i>
+                Python &amp; PDF
+              </div>
+              <div class="suggestion-desc">Ekstraksi teks PDF dengan Python</div>
+            </div>
+            <div class="suggestion-card" data-prompt="Bagaimana cara menghubungkan backend FastAPI ke frontend Django?">
+              <div class="suggestion-title">
+                <i class="fa-solid fa-diagram-project icon" aria-hidden="true"></i>
+                Django &amp; FastAPI
+              </div>
+              <div class="suggestion-desc">Integrasi arsitektur microservice</div>
+            </div>
+            <div class="suggestion-card"
+              data-prompt="Tuliskan sebuah puisi pendek tentang teknologi kecerdasan buatan.">
+              <div class="suggestion-title">
+                <i class="fa-solid fa-pen-nib icon" aria-hidden="true"></i>
+                Kreativitas
+              </div>
+              <div class="suggestion-desc">Buat puisi tentang era kecerdasan buatan</div>
+            </div>
+          </div>
+
+          <p class="input-disclaimer">Sanz AI dapat membuat kesalahan. Harap periksa kembali informasi penting.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+
+</html>

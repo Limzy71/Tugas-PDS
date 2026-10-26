@@ -1,6 +1,6 @@
 # Folder Gambar & Aset Visual (Images)
 
-Folder ini khusus digunakan untuk menyimpan logo, avatar, favicon, dan gambar aset Sanz AI.
+Folder ini khusus digunakan untuk menyimpan logo, avatar, favicon, dan gambar aset Mini AI.
 
 ### Cara Menggunakan:
 1. Simpan file logo Anda di sini, misalnya:
@@ -9,6 +9,6 @@ Folder ini khusus digunakan untuk menyimpan logo, avatar, favicon, dan gambar as
    - `favicon.ico`
 2. Di dalam file HTML (`app/static/index.html`) atau CSS, Anda bisa memanggilnya secara langsung lewat URL:
    ```html
-   <img src="/static/images/sanz-logo.svg" alt="Sanz AI Logo">
+   <img src="/static/images/mini-logo.svg" alt="Mini AI Logo">
    ```
-   *(Atau ganti `sanz-logo.svg` dengan nama file gambar Anda sendiri).*
+   *(Atau ganti `mini-logo.svg` dengan nama file gambar Anda sendiri).*

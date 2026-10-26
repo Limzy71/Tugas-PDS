@@ -1,5 +1,5 @@
 /* ==========================================================================
-    Sanz AI - ChatGPT-style dark theme
+    Mini AI - ChatGPT-style dark theme
    ========================================================================== */
 
 /* --- Design tokens --- */
@@ -15,8 +15,8 @@
   --text-primary: #ececec;
   --text-secondary: #b4b4b4;
   --text-muted: #757575;
-  --accent: #10a37f;
-  --accent-glow: rgba(16, 163, 127, 0.25);
+  --accent: #7c3aed;
+  --accent-glow: rgba(124, 58, 237, 0.3);
   --user-msg-bg: #2f2f2f;
   --sidebar-width: 260px;
 }
@@ -188,8 +188,8 @@ body {
   gap: 6px;
   padding: 4px 8px;
   border-radius: 12px;
-  background: rgba(16, 163, 127, 0.12);
-  color: #34d399;
+  background: rgba(124, 58, 237, 0.18);
+  color: #c4b5fd;
   font-weight: 500;
 }
 
@@ -197,7 +197,7 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10b981;
+  background: #7c3aed;
   animation: pulse-dot 2s infinite;
 }
 
@@ -275,8 +275,8 @@ body {
   font-weight: 500;
   padding: 2px 7px;
   border-radius: 6px;
-  background: rgba(16, 163, 127, 0.15);
-  color: #34d399;
+  background: rgba(124, 58, 237, 0.2);
+  color: #c4b5fd;
   letter-spacing: 0.2px;
 }
 
@@ -459,7 +459,7 @@ body {
 }
 
 .message-row.assistant .message-avatar {
-  background: linear-gradient(135deg, #10a37f, #0d8265);
+  background: linear-gradient(135deg, #7c3aed, #4c1d95);
   color: #fff;
   box-shadow: 0 0 10px var(--accent-glow);
 }
@@ -763,4 +763,3 @@ body {
     padding-top: 24px;
   }
 }
-

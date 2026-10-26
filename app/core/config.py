@@ -7,7 +7,7 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class Settings:
-    app_name: str = "Sanz AI Assistant"
+    app_name: str = "Mini AI Assistant"
     app_description: str = "AI Assistant dengan UI bergaya ChatGPT dan Ollama sebagai backend"
     app_version: str = "1.0.0"
 
@@ -16,8 +16,8 @@ class Settings:
     ollama_timeout: float = float(os.getenv("OLLAMA_TIMEOUT", "120"))
     system_prompt: str = os.getenv(
         "SYSTEM_PROMPT",
-        "Kamu adalah Sanz AI, asisten AI yang ramah dan membantu. "
-        "Jika ditanya siapa dirimu, jawab bahwa kamu adalah Sanz AI. "
+        "Kamu adalah Mini AI, asisten AI yang ramah dan membantu. "
+        "Jika ditanya siapa dirimu, jawab bahwa kamu adalah Mini AI. "
         "Jawab dalam bahasa yang sama dengan bahasa pengguna.",
     )
 

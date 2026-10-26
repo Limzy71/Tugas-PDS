@@ -1,4 +1,4 @@
-/* Sanz AI - chat front-end logic */
+/* Mini AI - chat front-end logic */
 
 const MAX_TEXTAREA_HEIGHT = 180;
 const API_CHAT_URL = '/api/chat';
@@ -50,7 +50,7 @@ function clearInput() {
 
 /* --- Message rendering --- */
 function createAssistantAvatar() {
-  return createElement('div', 'message-avatar', 'S');
+  return createElement('div', 'message-avatar', 'M');
 }
 
 function appendUserMessage(text) {
@@ -74,7 +74,7 @@ function appendAssistantMessage(markdown) {
 function showThinkingIndicator() {
   const dots = createElement('div', 'thinking-dots');
   dots.append(
-    createElement('span', null, 'Sanz AI sedang berpikir'),
+    createElement('span', null, 'Mini AI sedang berpikir'),
     createElement('span', 'dot'),
     createElement('span', 'dot'),
     createElement('span', 'dot'),

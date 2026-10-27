@@ -4,81 +4,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sanz AI - asisten AI lokal bertenaga Ollama dengan tampilan bergaya ChatGPT.">
-  <title>Sanz AI - Next-Gen Assistant</title>
+  <meta name="description" content="Sanz AI - Asisten AI lokal bertenaga Ollama dengan tampilan bersih dan responsif.">
+  <title>Sanz AI</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/static/images/sanz-logo.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <link rel="stylesheet" href="/static/css/style.css">
+  <script>
+    (function () {
+      const saved = localStorage.getItem('sanz_theme');
+      const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (systemDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+
+      if (window.innerWidth > 768 && localStorage.getItem('sanz_sidebar_collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed-init');
+      }
+    })();
+  </script>
 </head>
 
 <body>
 
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Mobile Backdrop -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <a href="/" class="brand">
         <div class="brand-icon">
           <img src="/static/images/sanz-logo.svg" alt="Sanz AI" class="brand-logo-img">
         </div>
-        <div class="brand-name">Sanz AI</div>
+        <span class="brand-name">Sanz AI</span>
       </a>
+      <button class="icon-btn-ghost sidebar-close-btn" id="sidebarCloseBtn" title="Tutup sidebar (Ctrl+B)" aria-label="Tutup sidebar">
+        <i class="fa-solid fa-angles-left icon" aria-hidden="true"></i>
+      </button>
     </div>
 
     <button class="new-chat-btn" id="newChatBtn">
-      <span>+ Obrolan Baru</span>
+      <span class="btn-text">
+        <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        Obrolan Baru
+      </span>
       <span class="shortcut-hint">Ctrl+K</span>
     </button>
 
     <div class="chat-history">
-      <div class="chat-history-title">Riwayat Percakapan</div>
-      <div class="history-item active">
-        <i class="fa-regular fa-message icon" aria-hidden="true"></i>
-        Sesi Saat Ini
+      <div class="chat-history-header">
+        <span class="chat-history-title">Riwayat Percakapan</span>
+        <button class="history-clear-all" id="clearAllHistoryBtn" title="Hapus semua riwayat">
+          <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="history-list" id="historyList">
+        <!-- Rendered dynamically by app.js -->
       </div>
     </div>
 
     <div class="sidebar-footer">
-      <div class="status-badge">
+      <div class="status-badge" id="ollamaStatusBadge" title="Status koneksi Ollama Engine">
         <div class="status-dot"></div>
-        <span>Ollama Online</span>
+        <span class="status-text" id="statusText">Ollama Online</span>
       </div>
-      <span class="version-label">v1.0.0</span>
+      <span class="version-label">v1.2</span>
     </div>
   </aside>
 
+  <!-- Main Content Area -->
   <main class="main-content chat-empty" id="mainContent">
     <header class="chat-header">
       <div class="header-left">
-        <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+        <button class="menu-toggle" id="menuToggle" title="Buka/Tutup sidebar (Ctrl+B)" aria-label="Buka/Tutup sidebar">
           <i class="fa-solid fa-bars icon icon-md" aria-hidden="true"></i>
         </button>
-        <div class="model-selector">
-          <span class="model-name">Sanz AI</span>
-          <span class="model-tag">llama3.2:3b</span>
+
+        <!-- Model Selector Dropdown -->
+        <div class="model-dropdown-wrapper" id="modelDropdownWrapper">
+          <button class="model-selector-btn" id="modelSelectorBtn" aria-haspopup="true" aria-expanded="false"
+            title="Klik untuk memilih model">
+            <span class="model-status-indicator" id="modelIndicator"></span>
+            <span class="model-name">Sanz AI</span>
+            <span class="model-tag" id="activeModelTag">llama3.2:3b</span>
+            <i class="fa-solid fa-chevron-down chevron-icon" aria-hidden="true"></i>
+          </button>
+
+          <div class="model-menu" id="modelMenu">
+            <div class="model-menu-header">
+              <i class="fa-solid fa-microchip icon" aria-hidden="true"></i>
+              Model Ollama
+            </div>
+            <div class="model-list" id="modelList">
+              <button class="model-option active" data-model="llama3.2:3b">
+                <div class="model-opt-info">
+                  <span class="model-opt-title">llama3.2:3b</span>
+                  <span class="model-opt-desc">Default • Cepat &amp; Ringan</span>
+                </div>
+                <i class="fa-solid fa-check check-icon" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="header-actions">
-        <button class="icon-btn" id="clearChatBtn" title="Bersihkan Obrolan">
-          <i class="fa-regular fa-trash-can icon" aria-hidden="true"></i>
-          Bersihkan
+        <button class="icon-btn" id="themeToggleBtn" title="Ganti tema terang / gelap" aria-label="Ganti tema">
+          <i class="fa-solid fa-sun icon" id="themeIcon" aria-hidden="true"></i>
         </button>
-        <a href="/docs" target="_blank" class="icon-btn" title="Buka Dokumentasi Swagger API">
-          <i class="fa-solid fa-book icon" aria-hidden="true"></i>
-          API Docs
+        <button class="icon-btn" id="exportChatBtn" title="Ekspor obrolan ke Markdown" aria-label="Ekspor obrolan">
+          <i class="fa-solid fa-arrow-up-from-bracket icon" aria-hidden="true"></i>
+        </button>
+        <button class="icon-btn" id="clearChatBtn" title="Bersihkan obrolan saat ini" aria-label="Bersihkan obrolan">
+          <i class="fa-regular fa-trash-can icon" aria-hidden="true"></i>
+        </button>
+        <a href="/docs" target="_blank" class="icon-btn" title="Buka Dokumentasi API (Swagger)" aria-label="API Docs">
+          <i class="fa-solid fa-book-bookmark icon" aria-hidden="true"></i>
         </a>
       </div>
     </header>
 
     <div class="chat-view" id="chatView">
+      <!-- Conversation message stream -->
       <div class="messages-container" id="messagesContainer">
         <div class="messages-wrapper" id="messagesWrapper">
 
+          <!-- Clean Welcome Hero -->
           <section class="welcome-hero" id="welcomeHero">
             <div class="hero-icon">
               <img src="/static/images/sanz-logo.svg" alt="Sanz AI" class="hero-logo-img">
@@ -90,18 +150,26 @@
         </div>
       </div>
 
+      <!-- Input Area (Centered when chat-empty, docked at bottom when chat-active) -->
       <div class="input-section" id="inputSection">
         <div class="input-wrapper">
           <form id="chatForm">
-            <div class="input-box">
-              <textarea id="promptInput" class="chat-textarea" rows="1" placeholder="Tanya apa saja ke Sanz AI..."
-                required></textarea>
-              <button type="submit" id="sendBtn" class="send-btn" aria-label="Kirim pesan" disabled>
-                <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-              </button>
+            <div class="input-box" id="inputBox">
+              <textarea id="promptInput" class="chat-textarea" rows="1"
+                placeholder="Tanya apa saja ke Sanz AI..." required></textarea>
+              <div class="input-btn-group">
+                <button type="button" id="stopBtn" class="stop-btn" style="display: none;" title="Hentikan">
+                  <i class="fa-solid fa-stop" aria-hidden="true"></i>
+                </button>
+                <button type="submit" id="sendBtn" class="send-btn" aria-label="Kirim pesan" disabled
+                  title="Kirim pesan">
+                  <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+                </button>
+              </div>
             </div>
           </form>
 
+          <!-- 4 Clean Suggestion Cards (Shown only on empty landing screen) -->
           <div class="suggestions-grid" id="suggestionsGrid">
             <div class="suggestion-card"
               data-prompt="Jelaskan apa keunggulan menjalankan AI secara lokal dengan Docker?">
@@ -111,6 +179,7 @@
               </div>
               <div class="suggestion-desc">Keunggulan menjalankan AI lokal di Docker</div>
             </div>
+
             <div class="suggestion-card"
               data-prompt="Buatkan contoh kode Python untuk membaca file PDF dan membuat ringkasannya.">
               <div class="suggestion-title">
@@ -119,13 +188,16 @@
               </div>
               <div class="suggestion-desc">Ekstraksi teks PDF dengan Python</div>
             </div>
-            <div class="suggestion-card" data-prompt="Bagaimana cara menghubungkan backend FastAPI ke frontend Django?">
+
+            <div class="suggestion-card"
+              data-prompt="Bagaimana cara menghubungkan backend FastAPI ke frontend Django?">
               <div class="suggestion-title">
                 <i class="fa-solid fa-diagram-project icon" aria-hidden="true"></i>
                 Django &amp; FastAPI
               </div>
               <div class="suggestion-desc">Integrasi arsitektur microservice</div>
             </div>
+
             <div class="suggestion-card"
               data-prompt="Tuliskan sebuah puisi pendek tentang teknologi kecerdasan buatan.">
               <div class="suggestion-title">

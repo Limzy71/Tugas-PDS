@@ -11,3 +11,9 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     model: str
+
+
+class ChatStreamRequest(BaseModel):
+    messages: list[dict] = Field(default_factory=list, description="Daftar riwayat percakapan")
+    model: str | None = Field(None, description="Nama model Ollama (opsional)")
+

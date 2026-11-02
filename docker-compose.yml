@@ -8,6 +8,32 @@ services:
       - ollama_data:/root/.ollama
     restart: always
 
+  opensearch:
+    image: opensearchproject/opensearch:2.11.0
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    restart: always
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.11.0
+    container_name: opensearch-dashboards
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    ports:
+      - "5601:5601"
+    depends_on:
+      - opensearch
+    restart: always
+
   api:
     build: .
     container_name: api
@@ -15,12 +41,17 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app/app
+      - ./knowledge-base:/app/knowledge-base
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_MODEL=llama3.2:3b
+      - KNOWLEDGE_BASE_PATH=/app/knowledge-base
+      - OPENSEARCH_BASE_URL=http://opensearch:9200
     depends_on:
       - ollama
+      - opensearch
     restart: always
 
 volumes:
   ollama_data:
+  opensearch_data:

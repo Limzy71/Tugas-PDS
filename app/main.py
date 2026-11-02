@@ -1,10 +1,14 @@
 """Entry point aplikasi: merakit router dan static files."""
 
+import os
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
 from app.routers import chat, pages, system
+
+KNOWLEDGE_BASE_PATH = os.environ.get("KNOWLEDGE_BASE_PATH", "/app/knowledge-base")
 
 app = FastAPI(
     title=settings.app_name,

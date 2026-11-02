@@ -62,3 +62,24 @@ async def list_models() -> dict:
         raise OllamaError(response.text, response.status_code)
 
     return response.json()
+
+
+async def stream_chat(messages: list[dict], model: str | None = None):
+    """Stream balasan chat dari Ollama menggunakan endpoint /api/chat."""
+    selected_model = model or settings.ollama_model
+    payload = {
+        "model": selected_model,
+        "messages": messages,
+        "stream": True,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=settings.ollama_timeout) as client:
+            async with client.stream("POST", f"{settings.ollama_base_url}/api/chat", json=payload) as response:
+                if response.status_code != 200:
+                    yield f"Error: Ollama returned status {response.status_code}"
+                    return
+                async for chunk in response.aiter_text():
+                    yield chunk
+    except Exception as exc:
+        yield f"Error streaming from Ollama: {exc}"
+

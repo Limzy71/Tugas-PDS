@@ -8,6 +8,40 @@ services:
       - ollama_data:/root/.ollama
     restart: always
 
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    restart: always
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:latest
+    container_name: opensearch-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    depends_on:
+      - opensearch
+    restart: always
+
   api:
     build: .
     container_name: api
@@ -15,12 +49,20 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app/app
+      - ./knowledge-base:/app/knowledge-base
     environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - OLLAMA_MODEL=llama3.2:3b
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:3b}
+      - OLLAMA_EMBED_MODEL=${OLLAMA_EMBED_MODEL:-nomic-embed-text}
+      - OPENSEARCH_BASE_URL=${OPENSEARCH_BASE_URL:-http://opensearch:9200}
+      - KNOWLEDGE_BASE_DIR=${KNOWLEDGE_BASE_DIR:-/app/knowledge-base}
+      - OLLAMA_TIMEOUT=${OLLAMA_TIMEOUT:-120}
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - ollama
+      - opensearch
     restart: always
 
 volumes:
   ollama_data:
+  opensearch_data:

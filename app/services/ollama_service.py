@@ -1,5 +1,7 @@
 """Layanan untuk berkomunikasi dengan server Ollama."""
 
+import json
+from typing import AsyncGenerator
 import httpx
 
 from app.core.config import settings
@@ -36,6 +38,33 @@ async def generate_reply(prompt: str, model: str | None = None) -> tuple[str, st
         raise OllamaError(f"Ollama error: {response.text}", response.status_code)
 
     return response.json().get("response", ""), selected_model
+
+
+async def generate_stream(prompt: str, model: str | None = None) -> AsyncGenerator[str, None]:
+    """Streaming balasan dari Ollama token demi token secara real-time."""
+    selected_model = model or settings.ollama_model
+    payload = {
+        "model": selected_model,
+        "prompt": prompt,
+        "system": settings.system_prompt,
+        "stream": True,
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=settings.ollama_timeout) as client:
+            async with client.stream(
+                "POST", f"{settings.ollama_base_url}/api/generate", json=payload
+            ) as response:
+                if response.status_code != 200:
+                    raise OllamaError(f"Ollama error: {response.status_code}", response.status_code)
+                async for line in response.aiter_lines():
+                    if line:
+                        chunk = json.loads(line)
+                        yield chunk.get("response", "")
+    except httpx.TimeoutException:
+        raise OllamaError("Ollama timeout saat streaming.", 504)
+    except httpx.HTTPError as exc:
+        raise OllamaError(f"Gagal streaming dari Ollama: {exc}", 502)
 
 
 async def get_version() -> str:

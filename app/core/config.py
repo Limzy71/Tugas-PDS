@@ -13,7 +13,12 @@ class Settings:
 
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
     ollama_model: str = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+    ollama_embed_model: str = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
     ollama_timeout: float = float(os.getenv("OLLAMA_TIMEOUT", "120"))
+    opensearch_base_url: str = os.getenv(
+        "OPENSEARCH_BASE_URL",
+        os.getenv("OPENSEARCH_URL", "http://opensearch:9200"),
+    )
     system_prompt: str = os.getenv(
         "SYSTEM_PROMPT",
         "Kamu adalah Mini AI, asisten AI yang ramah dan membantu. "
@@ -23,6 +28,7 @@ class Settings:
 
     base_dir: Path = Path(__file__).resolve().parent.parent
     static_dir: Path = base_dir / "static"
+    knowledge_base_dir: Path = Path(os.getenv("KNOWLEDGE_BASE_DIR", base_dir.parent / "knowledge-base"))
 
 
 settings = Settings()

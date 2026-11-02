@@ -21,6 +21,8 @@ async def server_status() -> dict:
         "status": "running",
         "ollama_base_url": settings.ollama_base_url,
         "ollama_model": settings.ollama_model,
+        "ollama_embed_model": settings.ollama_embed_model,
+        "opensearch_base_url": settings.opensearch_base_url,
         "ollama_status": await ollama_service.get_version(),
     }
 

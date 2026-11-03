@@ -448,12 +448,16 @@ function setProcessingState(processing) {
 /* ==========================================================================
    API Communication & Sending Messages
    ========================================================================== */
-async function requestReply(prompt, model) {
+async function requestReply(prompt, model, history = null) {
   abortController = new AbortController();
+  const payload = { prompt, model };
+  if (history && history.length) {
+    payload.history = history;
+  }
   const response = await fetch(API_CHAT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, model }),
+    body: JSON.stringify(payload),
     signal: abortController.signal,
   });
 
@@ -499,7 +503,8 @@ async function sendMessage(text) {
   const thinkingRow = showThinkingIndicator();
 
   try {
-    const result = await requestReply(text, selectedModel);
+    const history = currentSession.messages.slice(0, -1).slice(-6).map(m => ({ role: m.role, content: m.content }));
+    const result = await requestReply(text, selectedModel, history);
     stopThinkingIndicator(thinkingRow);
 
     const timeStr = formatTimestamp();

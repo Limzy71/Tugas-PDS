@@ -14,6 +14,7 @@ class Settings:
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
     ollama_model: str = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
     ollama_timeout: float = float(os.getenv("OLLAMA_TIMEOUT", "120"))
+    opensearch_base_url: str = os.getenv("OPENSEARCH_BASE_URL", "http://opensearch:9200")
     system_prompt: str = os.getenv(
         "SYSTEM_PROMPT",
         "Kamu adalah Sanz AI, asisten AI yang ramah dan membantu. "
